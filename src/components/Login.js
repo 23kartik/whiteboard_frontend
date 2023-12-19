@@ -4,14 +4,31 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import api from '../service/api'; // Import the API service
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log('Login clicked');
+  const handleLogin = async () => {
+    try {
+      const response = await api.post('/api/users/login', {
+        email,
+        password,
+      });
+
+      const { accessToken } = response.data;
+      // Store the token in local storage or state
+      // Example: localStorage.setItem('accessToken', accessToken);
+
+      // Update user state or perform other actions
+      setUser({ email }); // You can include more user information as needed
+
+      console.log('Login successful');
+    } catch (error) {
+      console.error('Error during login:', error);
+      // Handle login error, e.g., display an error message to the user
+    }
   };
 
   return (
@@ -24,6 +41,7 @@ const Login = () => {
         margin="normal"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        aria-label="Email"
       />
       <TextField
         label="Password"
@@ -33,6 +51,7 @@ const Login = () => {
         margin="normal"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        aria-label="Password"
       />
       <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
         Login

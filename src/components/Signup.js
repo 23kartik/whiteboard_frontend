@@ -1,18 +1,38 @@
-// src/components/Signup.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import api from '../service/api'; // Import the API service
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignup = () => {
-    // Add your signup logic here
-    console.log('Signup clicked');
+  const handleSignup = async () => {
+    try {
+      const response = await api.post('/api/users/register', {
+        username,
+        email,
+        password,
+      });
+
+      // Handle signup success
+      console.log('Signup successful:', response.data);
+
+      // Show success toast
+      toast.success('Signed up successfully!');
+
+
+    } catch (error) {
+      console.error('Error during signup:', error);
+      // Handle signup error, e.g., display an error message to the user
+    }
   };
 
   return (
@@ -25,6 +45,7 @@ const Signup = () => {
         margin="normal"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        aria-label="Username"
       />
       <TextField
         label="Email"
@@ -33,6 +54,7 @@ const Signup = () => {
         margin="normal"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        aria-label="Email"
       />
       <TextField
         label="Password"
@@ -42,10 +64,14 @@ const Signup = () => {
         margin="normal"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        aria-label="Password"
       />
       <Button variant="contained" color="primary" fullWidth onClick={handleSignup}>
         Sign Up
       </Button>
+
+     
+      <ToastContainer />
     </Paper>
   );
 };
