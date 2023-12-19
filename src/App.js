@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
@@ -15,29 +16,33 @@ function App() {
     setTabValue(newValue);
   };
 
+  const handleLogout = () => {
+    // Clear user information and remove JWT token from local storage
+    setUser(null);
+    localStorage.removeItem('jwtToken');
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-    <Navbar user={user} />
-    <div className="flex-1 flex justify-center mt-4">
-      <div  style={{ maxWidth: '600px', marginTop: '60px' }}>
-        
-        <Paper elevation={3} style={{ margin: '0 auto', padding: '20px' }}>
-          <Tabs value={tabValue} onChange={handleTabChange} centered>
-            <Tab label="Login" />
-            <Tab label="Signup" />
-          </Tabs>
+      <Navbar user={user} onLogout={handleLogout} />
+      <div className="flex-1 flex justify-center mt-4">
+        <div style={{ maxWidth: '600px', marginTop: '60px' }}>
           {!user && (
-            <>
-              {tabValue === 0 && <Login setUser={setUser} />}
-              {tabValue === 1 && <Signup />}
-            </>
+            <Paper elevation={3} style={{ margin: '0 auto', padding: '20px' }}>
+              <Tabs value={tabValue} onChange={handleTabChange} centered>
+                <Tab label="Login" />
+                <Tab label="Signup" />
+              </Tabs>
+              <>
+                {tabValue === 0 && <Login setUser={setUser} />}
+                {tabValue === 1 && <Signup />}
+              </>
+            </Paper>
           )}
           {user && <DrawingCanvas />}
-        </Paper>
+        </div>
       </div>
     </div>
-  </div>
-  
   );
 }
 
