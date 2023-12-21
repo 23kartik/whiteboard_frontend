@@ -1,12 +1,65 @@
-import React, { useRef,useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import io from 'socket.io-client';
+import api from '../service/api'; // Make sure to use the correct path
 
-
-const DrawingCanvas = () => {
+const DrawingCanvas = ({ user }) => {
   const canvasRef = useRef(null);
   const socket = io('http://localhost:5001');
 
+  useEffect(() => {
+ const loadDrawings = async () => {
+  try {
+    const response = await api.get('/api/users/load-drawings', {
+      params: {
+        email: user.email,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+      },
+    });
+
+    // console.log('Response from server:', response.data);
+
+    const drawings = response.data.drawings;
+    drawings.forEach((drawingData) => {
+      try {
+        // Parse the JSON string in drawingData.data
+        const drawing = JSON.parse(drawingData.data);
+    
+        // Check if the parsed drawing has lines property
+        if (drawing && drawing.lines) {
+          console.log("hello");
+          const saveData = {
+            lines: drawing.lines,
+            brushColor: drawing.brushColor || '#000000',
+            brushRadius: drawing.brushRadius || 5,
+          };
+    
+          canvasRef.current.loadSaveData(JSON.stringify(saveData), true);
+        } else {
+          console.error('Invalid format for drawingData:', drawingData);
+        }
+      } catch (error) {
+        console.error('Error parsing drawing data:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error loading drawings:', error);
+  }
+};
+
+
+    loadDrawings();
+
+    socket.on('draw', (data) => {
+      canvasRef.current.loadSaveData(data, true);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
 
   const clearCanvas = () => {
     if (canvasRef.current) {
@@ -15,22 +68,29 @@ const DrawingCanvas = () => {
   };
 
   const handleCanvasChange = (canvas) => {
-    // Emit draw event to the server
     socket.emit('draw', canvas.getSaveData());
-  };
 
-  useEffect(() => {
-    // Listen for draw events from the server
-    socket.on('draw', (data) => {
-      // Load the drawing data received from the server
-      canvasRef.current.loadSaveData(data, true);
-    });
-
-    return () => {
-      // Clean up the socket connection
-      socket.disconnect();
+    const saveDrawing = async () => {
+      try {
+        await api.post(
+          '/api/users/save-drawing',
+          {
+            email: user.email,
+            drawingData: canvas.getSaveData(),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+            },
+          }
+        );
+      } catch (error) {
+        console.error('Error saving drawing:', error);
+      }
     };
-  }, []);
+
+    saveDrawing();
+  };
 
   return (
     <div className="mx-auto max-w-md p-6 bg-white rounded-lg shadow-md">
@@ -57,7 +117,6 @@ const DrawingCanvas = () => {
           gridLineWidth={1}
           hideGridX={false}
           hideGridY={false}
-          imgSrc="https://example.com/image.jpg"
           className="custom-canvas-class"
           style={{ border: '2px solid #4CAF50', borderRadius: '4px' }}
         />

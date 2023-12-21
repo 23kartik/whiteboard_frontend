@@ -14,6 +14,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+
+  
   const handleSignup = async () => {
     try {
       const response = await api.post('/api/users/register', {
