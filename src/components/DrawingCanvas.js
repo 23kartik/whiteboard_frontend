@@ -18,10 +18,9 @@ const DrawingCanvas = ({ user }) => {
         Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
       },
     });
+    console.log(response.data.drawingData);
 
-    // console.log('Response from server:', response.data);
-
-    const drawings = response.data.drawings;
+    const drawings = response.data.drawingData;
     drawings.forEach((drawingData) => {
       try {
         // Parse the JSON string in drawingData.data
@@ -69,28 +68,54 @@ const DrawingCanvas = ({ user }) => {
 
   const handleCanvasChange = (canvas) => {
     socket.emit('draw', canvas.getSaveData());
-
-    const saveDrawing = async () => {
+  
+    const saveDrawings = async () => {
       try {
-        await api.post(
-          '/api/users/save-drawing',
-          {
-            email: user.email,
-            drawingData: canvas.getSaveData(),
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
-            },
+        const drawingData = JSON.parse(canvas.getSaveData());
+    
+        // Log the drawingData for debugging
+    
+        // Check if drawingData has lines property and it is an array
+        if (drawingData && drawingData.lines && Array.isArray(drawingData.lines)) {
+          // Ensure that each point in lines has x and y coordinates
+          const validDrawingData = drawingData.lines.every((line) =>
+            line.points.every((point) => point.x !== undefined && point.y !== undefined)
+          );
+    
+          if (validDrawingData) {
+            const email = user.email; // Assuming user.email is defined
+            const payload = {
+              email,
+              drawingData: JSON.stringify(drawingData), // Stringify the drawing data
+            };
+               
+    
+            // Send the API request
+            const response = await api.post('/api/users/save-drawings', payload, {
+
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+              },
+            });
+    
+            // Log the server response
+            console.log('Server Response:', response.data);
+          } else {
+            console.error('Invalid format for drawingData:', drawingData);
           }
-        );
+        } else {
+          console.error('Invalid format for drawingData:', drawingData);
+        }
       } catch (error) {
         console.error('Error saving drawing:', error);
       }
     };
-
-    saveDrawing();
+    
+  
+    saveDrawings();
   };
+  
+  
 
   return (
     <div className="mx-auto max-w-md p-6 bg-white rounded-lg shadow-md">
