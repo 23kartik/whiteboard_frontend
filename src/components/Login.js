@@ -16,14 +16,14 @@ const Login = ({ setUser }) => {
         email,
         password,
       });
-
+      
       const { accessToken } = response.data;
-      // Store the token in local storage or state
-      // Example: localStorage.setItem('accessToken', accessToken);
-
-      // Update user state or perform other actions
+  
+      // Store the token in localStorage
+      localStorage.setItem('jwtToken', accessToken);
+  
       setUser({ email }); // You can include more user information as needed
-
+  
       console.log('Login successful');
     } catch (error) {
       console.error('Error during login:', error);
