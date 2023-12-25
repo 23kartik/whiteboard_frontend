@@ -1,64 +1,71 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import CanvasDraw from 'react-canvas-draw';
 import io from 'socket.io-client';
-import api from '../service/api'; // Make sure to use the correct path
+import api from '../service/api';
 
 const DrawingCanvas = ({ user }) => {
   const canvasRef = useRef(null);
   const socket = io('http://localhost:5001');
+  const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
- const loadDrawings = async () => {
-  try {
-    const response = await api.get('/api/users/load-drawings', {
-      params: {
-        email: user.email,
-      },
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
-      },
-    });
-    console.log(response.data.drawingData);
-
-    const drawings = response.data.drawingData;
-    drawings.forEach((drawingData) => {
+    let isComponentMounted = true;
+  
+    const loadDrawings = async () => {
       try {
-        // Parse the JSON string in drawingData.data
-        const drawing = JSON.parse(drawingData.data);
-    
-        // Check if the parsed drawing has lines property
-        if (drawing && drawing.lines) {
-          console.log("hello");
-          const saveData = {
-            lines: drawing.lines,
-            brushColor: drawing.brushColor || '#000000',
-            brushRadius: drawing.brushRadius || 5,
-          };
-    
-          canvasRef.current.loadSaveData(JSON.stringify(saveData), true);
-        } else {
-          console.error('Invalid format for drawingData:', drawingData);
+        const response = await api.get('/api/users/load-drawings', {
+          params: {
+            email: user.email,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+          },
+        });
+  
+        if (isComponentMounted) {
+          const drawings = response.data.drawingData.lines;
+  
+          if (Array.isArray(drawings)) {
+            try {
+              const saveData = {
+                lines: drawings,
+                width: response.data.drawingData.width,
+                height: response.data.drawingData.height,
+              };
+  
+              setLoadingData(true);
+              canvasRef.current.loadSaveData(JSON.stringify(saveData), true);
+              setLoadingData(false);
+              console.log('Drawing loaded successfully', saveData);
+            } catch (loadError) {
+              console.error('Error loading drawing:', loadError);
+            }
+          } else {
+            console.error('Invalid format for response.data.drawingData.lines:', drawings);
+          }
         }
       } catch (error) {
-        console.error('Error parsing drawing data:', error);
+        console.error('Error loading drawings:', error);
       }
-    });
-  } catch (error) {
-    console.error('Error loading drawings:', error);
-  }
-};
-
-
+    };
+  
     loadDrawings();
-
-    socket.on('draw', (data) => {
-      canvasRef.current.loadSaveData(data, true);
-    });
-
+  
+    const handleDraw = (data) => {
+      if (!loadingData) {
+        canvasRef.current.loadSaveData(data, true);
+      }
+    };
+  
+    socket.on('draw', handleDraw);
+  
     return () => {
+      isComponentMounted = false;
+      socket.off('draw', handleDraw);
       socket.disconnect();
     };
-  }, [socket]);
+  }, [socket, loadingData, user.email]);
+  
 
   const clearCanvas = () => {
     if (canvasRef.current) {
@@ -66,56 +73,46 @@ const DrawingCanvas = ({ user }) => {
     }
   };
 
-  const handleCanvasChange = (canvas) => {
-    socket.emit('draw', canvas.getSaveData());
-  
-    const saveDrawings = async () => {
-      try {
-        const drawingData = JSON.parse(canvas.getSaveData());
-    
-        // Log the drawingData for debugging
-    
-        // Check if drawingData has lines property and it is an array
-        if (drawingData && drawingData.lines && Array.isArray(drawingData.lines)) {
-          // Ensure that each point in lines has x and y coordinates
-          const validDrawingData = drawingData.lines.every((line) =>
-            line.points.every((point) => point.x !== undefined && point.y !== undefined)
-          );
-    
-          if (validDrawingData) {
-            const email = user.email; // Assuming user.email is defined
-            const payload = {
-              email,
-              drawingData: JSON.stringify(drawingData), // Stringify the drawing data
-            };
-               
-    
-            // Send the API request
-            const response = await api.post('/api/users/save-drawings', payload, {
 
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
-              },
-            });
-    
-            // Log the server response
-            console.log('Server Response:', response.data);
-          } else {
-            console.error('Invalid format for drawingData:', drawingData);
-          }
+
+  const saveDrawings = async () => {
+    try {
+      const drawingData = JSON.parse(canvasRef.current.getSaveData());
+
+      // Check if there is any drawing data before making the request
+      if (drawingData && drawingData.lines && drawingData.lines.length > 0) {
+        const validDrawingData = drawingData.lines.every((line) =>
+          line.points.every((point) => point.x !== undefined && point.y !== undefined)
+        );
+
+        if (validDrawingData) {
+          const email = user.email;
+          const payload = {
+            email,
+            drawingData: JSON.stringify(drawingData),
+          };
+
+          const response = await api.post('/api/users/save-drawings', payload, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+            },
+          });
+
+          console.log('Server Response:', response.data);
         } else {
           console.error('Invalid format for drawingData:', drawingData);
         }
-      } catch (error) {
-        console.error('Error saving drawing:', error);
+      } else {
+        console.warn('No drawing data to save.');
       }
-    };
-    
-  
+    } catch (error) {
+      console.error('Error saving drawing:', error);
+    }
+  };
+
+  const handleSaveClick = () => {
     saveDrawings();
   };
-  
-  
 
   return (
     <div className="mx-auto max-w-md p-6 bg-white rounded-lg shadow-md">
@@ -128,7 +125,7 @@ const DrawingCanvas = ({ user }) => {
           brushColor="#4CAF50"
           brushRadius={3}
           lazyRadius={1}
-          onChange={handleCanvasChange}
+          
           gridColor="#DDD"
           backgroundColor="#F5F5F5"
           hideGrid={true}
@@ -146,12 +143,20 @@ const DrawingCanvas = ({ user }) => {
           style={{ border: '2px solid #4CAF50', borderRadius: '4px' }}
         />
       </div>
-      <button
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
-        onClick={clearCanvas}
-      >
-        Clear Canvas
-      </button>
+      <div className="flex justify-between mt-4">
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+          onClick={clearCanvas}
+        >
+          Clear Canvas
+        </button>
+        <button
+          className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300"
+          onClick={handleSaveClick}
+        >
+          Save
+        </button>
+      </div>
     </div>
   );
 };
