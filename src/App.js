@@ -21,7 +21,7 @@ function App() {
     setUser(null);
     localStorage.removeItem('jwtToken');
   };
-
+  console.log('App component rendering');
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar user={user} onLogout={handleLogout} />
