@@ -39,7 +39,11 @@ function App() {
               </>
             </Paper>
           )}
-          {user && <DrawingCanvas user={user} onLogout={handleLogout} />}
+          {user && (
+            <div className="drawing-canvas-container">
+              <DrawingCanvas user={user} onLogout={handleLogout} />
+            </div>
+          )}
         </div>
       </div>
     </div>
