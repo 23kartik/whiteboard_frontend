@@ -4,8 +4,10 @@ export const useDraw = (onDraw) => {
   const [mouseDown, setMouseDown] = useState(false);
   const canvasRef = useRef(null);
   const prevPoint = useRef(null);
-
-  const onMouseDown = () => setMouseDown(true);
+  const lineWidthRef = useRef(5); // Set the initial line width
+  const onMouseDown = () => {
+    setMouseDown(true);
+  };
 
   const clear = () => {
     const canvas = canvasRef.current;
@@ -13,22 +15,24 @@ export const useDraw = (onDraw) => {
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   useEffect(() => {
     const handler = (e) => {
       if (!mouseDown) return;
+    
       const currentPoint = computePointInCanvas(e);
-
       const ctx = canvasRef.current?.getContext('2d');
+    
       if (!ctx || !currentPoint) return;
-
-      onDraw({ ctx, currentPoint, prevPoint: prevPoint.current });
+    
+      // Ensure that lineWidth is accessible within this scope
+      const lineWidth = lineWidthRef.current; 
+    
+      onDraw({ ctx, currentPoint, prevPoint: prevPoint.current, lineWidth });
       prevPoint.current = currentPoint;
     };
-
     const computePointInCanvas = (e) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -56,5 +60,5 @@ export const useDraw = (onDraw) => {
     };
   }, [onDraw]);
 
-  return { canvasRef, onMouseDown, clear };
+  return { canvasRef, onMouseDown, clear, lineWidthRef };
 };
