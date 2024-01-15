@@ -10,29 +10,82 @@ import {
   FaEraser,
   FaPlus,
   FaMinus,
+  FaSpinner,
+  FaCloudDownloadAlt,
 } from 'react-icons/fa';
+import Avatar from 'react-avatar';
+import { FaUser, FaBars, FaTimes } from 'react-icons/fa';
+import { MdEmail } from 'react-icons/md';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaintBrush } from '@fortawesome/free-solid-svg-icons';
 import api from '../service/api';
 import { drawLine } from '../utils/drawLine';
 import { io } from 'socket.io-client';
 
+
+import { useUserContext } from '../UserContext';
 const socket = io('http://localhost:5001');
 
+
 const DrawingCanvas = ({ user }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen((prevOpen) => !prevOpen);
+  };
+
+
+
   const [color, setColor] = useState('#000');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [lineWidth, setLineWidth] = useState(5);
   const [canvasBackground, setCanvasBackground] = useState('#ffffff');
   const [eraserMode, setEraserMode] = useState(false);
+  const [newUsers, setNewUsers] = useState([]);
 
+ 
+    const getRandomColor = () => {
+      const letters = '0123456789ABCDEF';
+      let color = '######';
+      // for (let i = 0; i < 6; i++) {
+      //   color += letters[Math.floor(Math.random() * 16)];
+      // }
+      return color;
+    };
+
+  
 
   
   const createLine = ({ prevPoint, currentPoint, ctx }) => {
     const lineColor = eraserMode ? canvasBackground : color;
-    socket.emit('draw-line', { prevPoint, currentPoint, color: lineColor, lineWidth });
+    const userInitial = user.email.charAt(0);
+    socket.emit('draw-line', {
+      prevPoint,
+      currentPoint,
+      color: lineColor,
+      lineWidth,
+      
+    });
     drawLine({ prevPoint, currentPoint, ctx, color: lineColor, lineWidth });
   };
+  const { canvasRef, onMouseDown, clear } = useDraw(createLine);
+  useEffect(() => {
+    
+    socket.emit('new-users',user.email);
+    console.log('User Email:', user.email);
+    socket.on('update-users', (updatedUsers) => {
+      setNewUsers(updatedUsers);
+    });
+
+    return () => {
+      socket.off('update-users');
+    };
+  }, [user.email]);
+
+ 
+  
+
 
   const exportDrawing = () => {
     try {
@@ -81,13 +134,11 @@ const DrawingCanvas = ({ user }) => {
     setEraserMode((prevMode) => !prevMode);
   };
 
-  const { canvasRef, onMouseDown, clear } = useDraw(createLine);
+  
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d');
-
     socket.emit('client-ready');
-
     socket.on('get-canvas-state', () => {
       if (!canvasRef.current?.toDataURL()) return;
       socket.emit('canvas-state', canvasRef.current.toDataURL());
@@ -109,7 +160,6 @@ const DrawingCanvas = ({ user }) => {
     socket.on('clear', () => {
       clear();
     });
-
     return () => {
       socket.off('draw-line');
       socket.off('get-canvas-state');
@@ -158,14 +208,12 @@ const DrawingCanvas = ({ user }) => {
     }
   };
 
-  useEffect(() => {
-    loadDrawing();
-  }, []); // Load the drawing when the component mounts
-
   return (
     <div className='max-h-screen flex items-center justify-center relative'>
-      <div className='flex flex-row  space-x-4 p-6 relative z-10'>
-        <div className='flex flex-col items-center space-y-4 relative'>
+      <div className='flex flex-row space-x-4 p-6 relative '>
+      
+        <div className='flex flex-col items-center space-y-4 fixed left-2 z-10' >
+          
           <button
             type='button'
             className={`bg-${eraserMode ? 'gray' : 'blue'}-400 p-2 rounded-md border border-gray-400 hover:bg-gray-400 `}        
@@ -175,7 +223,7 @@ const DrawingCanvas = ({ user }) => {
           </button>
           <button
             type='button'
-            className='bg-gray-300 p-2 rounded-md border border-gray-400 hover:bg-gray-400'
+            className='bg-gray-300 p-2 rounded-md border border-gray-400 hover:bg-gray-400 '
             onClick={() => setShowColorPicker(!showColorPicker)}
           >
             <FaPalette style={{ fontSize: '.6cm' }} />
@@ -200,12 +248,19 @@ const DrawingCanvas = ({ user }) => {
           </button>
           <button
             type='button'
+            className='bg-blue-400 text-white p-2 rounded-md hover:bg-blue-600'
+            onClick={loadDrawing}
+          >
+          <FaCloudDownloadAlt style={{ fontSize: '.6cm' }} />
+          </button>
+          <button
+            type='button'
             className='bg-green-400 text-white p-2 rounded-md hover:bg-blue-600'
             onClick={saveDrawing}
           >
             <FaSave style={{ fontSize: '.6cm' }} />
           </button>
-
+         
           <button
             type='button'
             className='bg-yellow-400 p-2 rounded-md border border-gray-400 hover:bg-gray-400'
@@ -233,9 +288,24 @@ const DrawingCanvas = ({ user }) => {
           </button>
         </div>
 
-        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[1355px] h-[685px] ' style={{ background: canvasBackground }}>
-          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}`} ref={canvasRef} onMouseDown={onMouseDown} width={1355} height={685} />
+        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[1055px] h-[685px] left-16 fixed ' style={{ background: canvasBackground }}>
+
+
+          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={1055} height={685} />
+        </div>    
+        <div className="connected-users fixed top-0 right-0 h-full bg-gradient-to-t from-#FF5733 to-#33FF57 p-4   w-52 overflow-hidden">
+  <div className="bookshelf grid grid-cols-2  mt-20 h-full overflow-y-auto">
+    {newUsers.map((connectedUser, index) => (
+      <div key={`${connectedUser}-${index}`} className="user-card hover:shadow-lg ">
+        <div className="user-cover">
+          <FaUser className="user-icon" />
         </div>
+        <span className="user-name">{connectedUser}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
       </div>
     </div>
   );
