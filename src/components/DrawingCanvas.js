@@ -10,10 +10,20 @@ import {
   FaEraser,
   FaPlus,
   FaMinus,
-  FaSpinner,
+  FaChevronUp, FaChevronDown,
   FaCloudDownloadAlt,
+  FaInfoCircle,
+  FaUsers,
+  FaReplyAll,
+  FaPeopleCarry,
+  FaPersonBooth,
+  FaUserPlus,
+  FaSearch,
+
 } from 'react-icons/fa';
+
 import Avatar from 'react-avatar';
+import { IoMdChatbubbles } from 'react-icons/io';
 import { FaUser, FaBars, FaTimes } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
@@ -29,19 +39,20 @@ const socket = io('http://localhost:5001');
 
 
 const DrawingCanvas = ({ user }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('chat'); 
 
-  const toggleSidebar = () => {
-    setSidebarOpen((prevOpen) => !prevOpen);
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
   };
 
 
-
+  const [showUserList, setShowUserList] = useState(true);
   const [color, setColor] = useState('#000');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [lineWidth, setLineWidth] = useState(5);
   const [canvasBackground, setCanvasBackground] = useState('#ffffff');
   const [eraserMode, setEraserMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [newUsers, setNewUsers] = useState([]);
 
  
@@ -209,7 +220,7 @@ const DrawingCanvas = ({ user }) => {
   };
 
   return (
-    <div className='max-h-screen flex items-center justify-center relative'>
+     <div className='max-h-screen flex items-center justify-center relative'>
       <div className='flex flex-row space-x-4 p-6 relative '>
       
         <div className='flex flex-col items-center space-y-4 fixed left-2 z-10' >
@@ -294,17 +305,93 @@ const DrawingCanvas = ({ user }) => {
           <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={1055} height={685} />
         </div>    
         <div className="connected-users fixed top-0 right-0 h-full bg-gradient-to-t from-#FF5733 to-#33FF57 p-4   w-52 overflow-hidden">
-  <div className="bookshelf grid grid-cols-2  mt-20 h-full overflow-y-auto">
-    {newUsers.map((connectedUser, index) => (
-      <div key={`${connectedUser}-${index}`} className="user-card hover:shadow-lg ">
-        <div className="user-cover">
-          <FaUser className="user-icon" />
-        </div>
-        <span className="user-name">{connectedUser}</span>
-      </div>
-    ))}
+          <div className="bookshelf grid grid-cols-2 mt-16 h-full overflow-y-auto">
+            {/* Conditionally render content based on active section */}
+            {activeSection === 'info' && (
+              // Content for Info section
+              <div>
+                <h3>Meeting Info</h3>
+                {/* Add your meeting info here */}
+              </div>
+            )}
+            {activeSection === 'participants' && (
+              // Content for Participants section
+              <div className="flex flex-col items-start ">
+             <h2 className="text-[28px] mb-6  ">Participants</h2>
+             <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 hover:shadow-lg transition duration-300">
+  <span className='flex flex-row items-center'>
+    <FaUserPlus style={{ fontSize: '0.6cm' }} />
+    <span className='ml-2 font-semibold'>Add People</span>
+  </span>
+</button>
+
+     
+<input
+  type="text"
+  placeholder="🔍 Search for participants"
+  className="border p-4 mt-4 w-64 rounded-md text-white bg-black bg-opacity-50  focus:outline-none focus:border-blue-500 transition duration-300"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+/>
+
+            
+
+<div className="overflow-y-auto mt-12 w-64 border rounded-md p-1">
+  <div className="flex items-center justify-between mb-2">
+    <h2 className="text-[22px] ">Contributors</h2>
+   
+    <div className="flex items-center">
+      
+      <span className="text-gray-500 mr-6">{newUsers.length}</span>
+      {showUserList ? (
+        <FaChevronUp onClick={() => setShowUserList(false)} />
+      ) : (
+        <FaChevronDown onClick={() => setShowUserList(true)} />
+      )}
+    </div>
   </div>
+  <hr className="border-t border-gray-300 w-full mb-6" />
+  {showUserList && (
+    <>
+      {newUsers.length > 0 ? (
+        newUsers
+          .filter((connectedUser) =>
+            connectedUser.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map((filteredUser, index) => (
+            <div key={`${filteredUser}-${index}`} className="flex items-center space-x-4 mb-4 mt-4 ml-2">
+              <div className="user-cover">
+                <FaUser className="user-icon" />
+              </div>
+              <div>
+                <span className="user-email text-gray-500 ">{filteredUser}</span>
+              </div>
+            </div>
+          ))
+      ) : (
+        <div className="text-gray-500 text-center">User not found</div>
+      )}
+    </>
+  )}
 </div>
+            </div>
+            
+            
+            )}
+            {activeSection === 'chat' && (
+              // Content for Chat section
+              <div>
+                <h3>Chat Section</h3>
+                {/* Add your chat content here */}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-row mt-4 space-x-20">
+    <button onClick={() => handleSectionChange('info')}><FaInfoCircle style={{ fontSize: '.8cm' }}/></button>
+    <button onClick={() => handleSectionChange('participants')}><FaUsers style={{ fontSize: '.8cm' }}/></button>
+    <button onClick={() => handleSectionChange('chat')}><IoMdChatbubbles style={{ fontSize: '.8cm' }}/></button>
+  </div>
+        </div>
 
       </div>
     </div>
