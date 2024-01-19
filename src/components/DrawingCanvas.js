@@ -353,7 +353,7 @@ const DrawingCanvas = ({ user }) => {
   <hr className="border-t border-gray-300 w-full mb-6" />
   {showUserList && (
     <>
-      {newUsers.length > 0 ? (
+      {newUsers.length > 0 && (
         newUsers
           .filter((connectedUser) =>
             connectedUser.toLowerCase().includes(searchQuery.toLowerCase())
@@ -368,9 +368,11 @@ const DrawingCanvas = ({ user }) => {
               </div>
             </div>
           ))
-      ) : (
-        <div className="text-gray-500 text-center">User not found</div>
-      )}
+      )} 
+        {newUsers.length > 0 && newUsers.every((user) => !user.toLowerCase().includes(searchQuery.toLowerCase())) && (
+          <div className="text-gray-500 top-0 text-center">User not found</div>
+        )}
+     
     </>
   )}
 </div>
