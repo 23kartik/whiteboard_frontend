@@ -14,18 +14,14 @@ import {
   FaCloudDownloadAlt,
   FaInfoCircle,
   FaUsers,
-  FaReplyAll,
-  FaPeopleCarry,
-  FaPersonBooth,
   FaUserPlus,
-  FaSearch,
-
+  FaPaperPlane,
 } from 'react-icons/fa';
 
-import Avatar from 'react-avatar';
+
 import { IoMdChatbubbles } from 'react-icons/io';
-import { FaUser, FaBars, FaTimes } from 'react-icons/fa';
-import { MdEmail } from 'react-icons/md';
+import { FaUser } from 'react-icons/fa';
+
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaintBrush } from '@fortawesome/free-solid-svg-icons';
@@ -34,7 +30,7 @@ import { drawLine } from '../utils/drawLine';
 import { io } from 'socket.io-client';
 
 
-import { useUserContext } from '../UserContext';
+
 const socket = io('http://localhost:5001');
 
 
@@ -55,20 +51,15 @@ const DrawingCanvas = ({ user }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [newUsers, setNewUsers] = useState([]);
 
- 
-    const getRandomColor = () => {
-      const letters = '0123456789ABCDEF';
-      let color = '######';
-      // for (let i = 0; i < 6; i++) {
-      //   color += letters[Math.floor(Math.random() * 16)];
-      // }
-      return color;
-    };
+  const [message, setMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState([]);
+
 
   
 
   
   const createLine = ({ prevPoint, currentPoint, ctx }) => {
+
     const lineColor = eraserMode ? canvasBackground : color;
     const userInitial = user.email.charAt(0);
     socket.emit('draw-line', {
@@ -94,7 +85,24 @@ const DrawingCanvas = ({ user }) => {
     };
   }, [user.email]);
 
- 
+  const sendMessage = () => {
+    if (message.trim() !== '') {
+      const timestamp = new Date().toLocaleTimeString(); // Generate timestamp
+      socket.emit('send-message', { message, role: 'sender', timestamp });
+      setMessage('');
+    }
+  };
+  
+  // Update the useEffect to handle messages with roles and timestamp
+  useEffect(() => {
+    socket.on('receive-message', ({ user, message, role, timestamp }) => {
+      setChatMessages((prevMessages) => [...prevMessages, { user, message, role, timestamp }]);
+    });
+  
+    return () => {
+      socket.off('receive-message');
+    };
+  }, []);
   
 
 
@@ -299,13 +307,13 @@ const DrawingCanvas = ({ user }) => {
           </button>
         </div>
 
-        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[1055px] h-[685px] left-16 fixed ' style={{ background: canvasBackground }}>
+        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[955px] h-[695px] left-16 fixed ' style={{ background: canvasBackground }}>
 
 
-          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={1055} height={685} />
+          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={955} height={695} />
         </div>    
-        <div className="connected-users fixed top-0 right-0 h-full bg-gradient-to-t from-#FF5733 to-#33FF57 p-4   w-52 overflow-hidden">
-          <div className="bookshelf grid grid-cols-2 mt-16 h-full overflow-y-auto">
+        <div className="connected-users fixed  h-full bg-gradient-to-t from-#FF5733 to-#33FF57 p-4 overflow-hidden">
+          <div className="grid grid-cols-2 mt-16 h-full overflow-y-auto">
             {/* Conditionally render content based on active section */}
             {activeSection === 'info' && (
               // Content for Info section
@@ -321,7 +329,7 @@ const DrawingCanvas = ({ user }) => {
              <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 hover:shadow-lg transition duration-300">
   <span className='flex flex-row items-center'>
     <FaUserPlus style={{ fontSize: '0.6cm' }} />
-    <span className='ml-2 font-semibold'>Add People</span>
+    <span className='ml-2 '>Add People</span>
   </span>
 </button>
 
@@ -329,14 +337,14 @@ const DrawingCanvas = ({ user }) => {
 <input
   type="text"
   placeholder="🔍 Search for participants"
-  className="border p-4 mt-4 w-64 rounded-md text-white bg-black bg-opacity-50  focus:outline-none focus:border-blue-500 transition duration-300"
+  className="border p-4 mt-4 w-[340px] rounded-md text-white bg-black bg-opacity-50  focus:outline-none focus:border-blue-500 transition duration-300"
   value={searchQuery}
   onChange={(e) => setSearchQuery(e.target.value)}
 />
 
             
 
-<div className="overflow-y-auto mt-12 w-64 border rounded-md p-1">
+<div className="overflow-y-auto mt-12 w-[340px]  border rounded-md p-1">
   <div className="flex items-center justify-between mb-2">
     <h2 className="text-[22px] ">Contributors</h2>
    
@@ -377,18 +385,41 @@ const DrawingCanvas = ({ user }) => {
   )}
 </div>
             </div>
-            
-            
+
             )}
             {activeSection === 'chat' && (
               // Content for Chat section
-              <div>
-                <h3>Chat Section</h3>
-                {/* Add your chat content here */}
+              <div className="chat-section">
+<h3 className="text-lg font-semibold text-gray-800 mt-2">Chat Section</h3>
+              <div className="chat-container">
+                <div className="chat-messages">
+      {chatMessages.map(({ user, message, role,timestamp }, index) => (
+    <>
+ <div className={`message ${role === 'sender' ? 'own-message' : 'received-message'}`}>
+  <strong>{user.split('@')[0]}:</strong> {message}
+  <div className="flex justify-end">
+    <span className="text-xs text-blue-500 mr-2">{timestamp}</span>
+  </div>
+</div>
+  </>
+  
+))}
+                </div>
+                <div className="chat-input">
+                  <input
+                    type="text"
+                    placeholder="Type your message..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <button  onClick={sendMessage}><FaPaperPlane style={{ fontSize: '.4cm' }}/></button>
+                </div>
               </div>
+            </div>
+            
             )}
           </div>
-          <div className="flex flex-row mt-4 space-x-20">
+          <div className="flex flex-row mt-4 space-x-28 mx-auto">
     <button onClick={() => handleSectionChange('info')}><FaInfoCircle style={{ fontSize: '.8cm' }}/></button>
     <button onClick={() => handleSectionChange('participants')}><FaUsers style={{ fontSize: '.8cm' }}/></button>
     <button onClick={() => handleSectionChange('chat')}><IoMdChatbubbles style={{ fontSize: '.8cm' }}/></button>
