@@ -19,6 +19,7 @@ export const useDraw = (onDraw) => {
   };
 
   useEffect(() => {
+    console.log("7");
     const handler = (e) => {
       if (!mouseDown) return;
     

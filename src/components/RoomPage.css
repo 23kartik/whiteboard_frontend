@@ -1,0 +1,63 @@
+.room-container {
+    width: 500px;
+    margin: 50px auto;
+  
+   padding: 40px;
+    background: linear-gradient(to right, #120d0e, #1c6291);
+    border-radius: 20px;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    font-size: 36px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .create-room-section,
+  .join-room-section {
+    margin-bottom: 30px;
+  }
+  
+  .room-input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .room-input::placeholder {
+    color: #ddd;
+  }
+  
+  .room-input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .room-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #ff4e50;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .room-button:hover {
+    background-color: #fc913a;
+  }
+  

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDraw } from '../hooks/useDraw';
 import { ChromePicker } from 'react-color';
+import { useParams,useNavigate } from 'react-router-dom';
 import {
   FaPalette,
   FaTrashAlt,
@@ -33,13 +34,14 @@ import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5001');
 
-
 const DrawingCanvas = ({ user }) => {
+
   const [activeSection, setActiveSection] = useState('chat'); 
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
   };
+
 
 
   const [showUserList, setShowUserList] = useState(true);
@@ -53,29 +55,21 @@ const DrawingCanvas = ({ user }) => {
 
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
-
-
+  const roomId = useParams().roomID;
+  const history = useNavigate();
+ 
   
-
-  
-  const createLine = ({ prevPoint, currentPoint, ctx }) => {
-
-    const lineColor = eraserMode ? canvasBackground : color;
-    const userInitial = user.email.charAt(0);
-    socket.emit('draw-line', {
-      prevPoint,
-      currentPoint,
-      color: lineColor,
-      lineWidth,
-      
-    });
-    drawLine({ prevPoint, currentPoint, ctx, color: lineColor, lineWidth });
-  };
-  const { canvasRef, onMouseDown, clear } = useDraw(createLine);
   useEffect(() => {
-    
-    socket.emit('new-users',user.email);
-    console.log('User Email:', user.email);
+
+if(!user) {
+  history('/room');
+
+} 
+  // User session exists, initialize room connection
+  else{
+    socket.emit('join-room', roomId, user.email); // Emit room ID and user email
+    socket.emit('new-users', user.email); // Emit new user event
+
     socket.on('update-users', (updatedUsers) => {
       setNewUsers(updatedUsers);
     });
@@ -83,25 +77,59 @@ const DrawingCanvas = ({ user }) => {
     return () => {
       socket.off('update-users');
     };
-  }, [user.email]);
+  }
+    
+    
+  }, [socket, roomId, user, history]);
+  
+  const createLine = ({ prevPoint, currentPoint, ctx }) => {
+
+    const lineColor = eraserMode ? canvasBackground : color;
+    socket.emit('draw-line', { roomName: roomId, prevPoint, currentPoint, ctx, color: lineColor, lineWidth });
+    drawLine({ prevPoint, currentPoint, ctx, color: lineColor, lineWidth });  };
+  const { canvasRef, onMouseDown, clear } = useDraw(createLine);
+  
+  useEffect(() => {
+    if(!user) {
+      history('/room');
+    }  
+else{
+  socket.emit('new-users', user.email);
+
+  socket.on('update-users', (updatedUsers) => {
+    setNewUsers(updatedUsers);
+  });
+
+  return () => {
+    socket.off('update-users');
+  };
+}
+
+  }, [socket, user]);
 
   const sendMessage = () => {
     if (message.trim() !== '') {
       const timestamp = new Date().toLocaleTimeString(); // Generate timestamp
-      socket.emit('send-message', { message, role: 'sender', timestamp });
+      socket.emit('send-message', { roomName: roomId, message, role: 'sender', timestamp });
       setMessage('');
     }
   };
   
   // Update the useEffect to handle messages with roles and timestamp
   useEffect(() => {
-    socket.on('receive-message', ({ user, message, role, timestamp }) => {
-      setChatMessages((prevMessages) => [...prevMessages, { user, message, role, timestamp }]);
-    });
-  
-    return () => {
-      socket.off('receive-message');
-    };
+    if(!user) {
+      history('/room');
+    }  
+else{
+  socket.on('receive-message', ({ user, message, role, timestamp }) => {
+    setChatMessages((prevMessages) => [...prevMessages, { user, message, role, timestamp }]);
+  });
+
+  return () => {
+    socket.off('receive-message');
+  };
+}
+ 
   }, []);
   
 
@@ -156,35 +184,41 @@ const DrawingCanvas = ({ user }) => {
   
 
   useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d');
-    socket.emit('client-ready');
-    socket.on('get-canvas-state', () => {
-      if (!canvasRef.current?.toDataURL()) return;
-      socket.emit('canvas-state', canvasRef.current.toDataURL());
-    });
+    if(!user) {
+      history('/room');
+    }  
+else{
+  const ctx = canvasRef.current?.getContext('2d');
+  socket.emit('client-ready');
+  socket.on('get-canvas-state', () => {
+    if (!canvasRef.current?.toDataURL()) return;
+    socket.emit('canvas-state', canvasRef.current.toDataURL());
+  });
 
-    socket.on('canvas-state-from-server', (state) => {
-      const img = new Image();
-      img.src = state;
-      img.onload = () => {
-        ctx?.drawImage(img, 0, 0);
-      };
-    });
-
-    socket.on('draw-line', ({ prevPoint, currentPoint, color, lineWidth }) => {
-      if (!ctx) return console.log('no ctx here');
-      drawLine({ prevPoint, currentPoint, ctx, color, lineWidth });
-    });
-
-    socket.on('clear', () => {
-      clear();
-    });
-    return () => {
-      socket.off('draw-line');
-      socket.off('get-canvas-state');
-      socket.off('canvas-state-from-server');
-      socket.off('clear');
+  socket.on('canvas-state-from-server', (state) => {
+    const img = new Image();
+    img.src = state;
+    img.onload = () => {
+      ctx?.drawImage(img, 0, 0);
     };
+  });
+
+  socket.on('draw-line', ({ prevPoint, currentPoint, color, lineWidth }) => {
+    if (!ctx) return console.log('no ctx here');
+    drawLine({ prevPoint, currentPoint, ctx, color, lineWidth });
+  });
+
+  socket.on('clear', () => {
+    clear();
+  });
+  return () => {
+    socket.off('draw-line');
+    socket.off('get-canvas-state');
+    socket.off('canvas-state-from-server');
+    socket.off('clear');
+  };
+}
+
   }, [canvasRef]);
 
   const saveDrawing = async () => {

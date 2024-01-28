@@ -1,5 +1,6 @@
-// src/components/Navbar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -7,19 +8,29 @@ import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 
 const transparentButtonStyle = {
-  backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent white background
-  border: '1px solid rgba(255, 255, 255, 0.2)', // Semi-transparent white border
+  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
   color: 'white',
-  borderRadius: '4px', // Adjust the border radius as needed
-  backdropFilter: 'blur(10px)', // Apply blur for a glass effect
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Apply a subtle shadow
+  borderRadius: '4px',
+  backdropFilter: 'blur(10px)',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
 };
 
-const Navbar = ({ user, onLogout }) => {
+const Navbar = ({ user, setUser, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [initialized, setInitialized] = useState(false);
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    console.log("6");
+    const storedEmail = localStorage.getItem('userEmail');
+    if (storedEmail && !user && !initialized) {
+      setUser({ email: storedEmail });
+      setInitialized(true);
+    }
+  }, [user, setUser, initialized]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,9 +41,11 @@ const Navbar = ({ user, onLogout }) => {
   };
 
   const handleLogout = () => {
-   
     onLogout();
     handleMenuClose();
+  };
+  const handleClick=()=>{
+    navigate('/');
   };
 
   return (
@@ -46,7 +59,7 @@ const Navbar = ({ user, onLogout }) => {
             <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
               <Avatar>{user.email.charAt(0)}</Avatar>
             </IconButton>
-            <Menu className='mt-1 ml-3'
+            <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
@@ -60,21 +73,16 @@ const Navbar = ({ user, onLogout }) => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <div className="p-4 ">
+              <div className="p-4">
                 <div className="flex items-center mb-4">
                   <Avatar>{user.email.charAt(0)}</Avatar>
-                  <div className='ml-2'>
+                  <div className="ml-2">
                     <Typography variant="subtitle1">{user.email}</Typography>
                   </div>
                 </div>
                 <div className="flex justify-between">
-                 
                   <div>
-                    <Button
-                      variant="outlined"
-                     
-                      onClick={handleLogout}
-                    >
+                    <Button variant="outlined" onClick={handleLogout}>
                       Logout
                     </Button>
                   </div>
@@ -84,16 +92,10 @@ const Navbar = ({ user, onLogout }) => {
           </>
         ) : (
           <div className="flex space-x-2">
-            <Button
-              variant="outlined"
-              style={transparentButtonStyle}
-            >
+            <Button variant="outlined" style={transparentButtonStyle} onClick={handleClick}>
               Signup
             </Button>
-            <Button
-              variant="outlined"
-              style={transparentButtonStyle}
-            >
+            <Button variant="outlined" style={transparentButtonStyle} onClick={handleClick}>
               Login
             </Button>
           </div>
