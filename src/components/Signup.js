@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+
 import api from '../service/api'; // Import the API service
 import './Signup.css'; // Import the custom CSS file
 
 const Signup = ({ setTabValue }) => {
-  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +23,13 @@ const Signup = ({ setTabValue }) => {
       console.log('Signup successful:', response.data);
 
       // Show success toast
-      toast.success('Signed up successfully!');
+      toast.success('Signed up successfully!', {
+        onClose: () => {
+          setTimeout(() => {
+            setTabValue(0);
+          }, 1000);
+        }
+      });
     } catch (error) {
       console.error('Error during signup:', error);
       // Handle signup error, e.g., display an error message to the user

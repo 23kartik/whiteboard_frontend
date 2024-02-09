@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,13 +17,11 @@ const transparentButtonStyle = {
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
 };
 
-const Navbar = ({ user, setUser, onLogout }) => {
+const Navbar = ({ user, setUser, onLogout,setTabValue }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [initialized, setInitialized] = useState(false);
-  const navigate=useNavigate();
 
   useEffect(() => {
-    console.log("6");
     const storedEmail = localStorage.getItem('userEmail');
     if (storedEmail && !user && !initialized) {
       setUser({ email: storedEmail });
@@ -44,10 +41,13 @@ const Navbar = ({ user, setUser, onLogout }) => {
     onLogout();
     handleMenuClose();
   };
-  const handleClick=()=>{
-    navigate('/');
+  const handleSignupClick=()=>{
+   setTabValue(1);
   };
 
+  const handleLoginClick=()=>{
+    setTabValue(0)
+  };
   return (
     <AppBar style={{ backgroundColor: '#164863', zIndex: 1000 }}>
       <Toolbar>
@@ -92,10 +92,10 @@ const Navbar = ({ user, setUser, onLogout }) => {
           </>
         ) : (
           <div className="flex space-x-2">
-            <Button variant="outlined" style={transparentButtonStyle} onClick={handleClick}>
+            <Button variant="outlined" style={transparentButtonStyle} onClick={handleSignupClick}>
               Signup
             </Button>
-            <Button variant="outlined" style={transparentButtonStyle} onClick={handleClick}>
+            <Button variant="outlined" style={transparentButtonStyle} onClick={handleLoginClick}>
               Login
             </Button>
           </div>

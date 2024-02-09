@@ -1,22 +1,17 @@
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { Route, Routes} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import DrawingCanvas from './components/DrawingCanvas';
 import RoomPage from './components/RoomPage';
-import Paper from '@mui/material/Paper';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+
 
 function App() {
   const [user, setUser] = useState(null);
-  const navigate=useNavigate();
   const [tabValue, setTabValue] = useState(0);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
+
 
   const handleLogout = () => {
     setUser(null);
@@ -28,7 +23,7 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar user={user} setUser={setUser} onLogout={handleLogout} />
+      <Navbar user={user} setUser={setUser} onLogout={handleLogout}  setTabValue={setTabValue}/>
       <div className="flex-1 flex justify-center mt-4">
         <div style={{ marginTop: '60px' }}>
           <Routes>
