@@ -19,8 +19,10 @@ import {
   FaPaperPlane,
 
   FaDoorOpen,
+  FaCopy,
 } from 'react-icons/fa';
 
+import { FiCopy } from 'react-icons/fi';
 
 import { IoMdChatbubbles } from 'react-icons/io';
 import { FaUser } from 'react-icons/fa';
@@ -30,6 +32,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaintBrush } from '@fortawesome/free-solid-svg-icons';
 import api from '../service/api';
 import { drawLine } from '../utils/drawLine';
+import Popup from './Popup'; // Import the Popup component
 import { io } from 'socket.io-client';
 
 
@@ -61,6 +64,19 @@ const DrawingCanvas = ({ user }) => {
   const [roomData, setRoomData]=useState("");
   const roomId = useParams().roomID;
   const history = useNavigate();
+  const meetingLink = `http://localhost:3000/drawing/${roomId}`;
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleAddPeopleClick = () => {
+    // Open the popup when the "Add People" button is clicked
+    setIsPopupOpen(true);
+    console.log("open");
+  };
+
+  const handleClosePopup = () => {
+    // Close the popup
+    setIsPopupOpen(false);
+  };
  
   
 useEffect(() => {
@@ -307,6 +323,15 @@ useEffect(() => {
       socket.off('roomDeleted');
   };
 }, [history]);
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(meetingLink);
+    alert('Meeting link copied to clipboard!');
+  } catch (error) {
+    console.error('Failed to copy meeting link:', error);
+    alert('Failed to copy meeting link. Please try again.');
+  }
+};
 
   return (
      <div className='max-h-screen flex items-center justify-center relative'>
@@ -393,26 +418,32 @@ useEffect(() => {
 
           <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={955} height={695} />
         </div>    
-        <div className="connected-users fixed  h-full bg-gradient-to-t from-#FF5733 to-#33FF57 p-4 overflow-hidden">
-          <div className="grid grid-cols-2 mt-16 h-full overflow-y-auto">
+        <div className="connected-users  bg-gradient-to-t from-#FF5733 to-#33FF57 p-4 overflow-hidden">
+          <div className="grid grid-cols-2 h-full overflow-y-auto">
             {/* Conditionally render content based on active section */}
             {activeSection === 'info' && (
               // Content for Info section
-              <div>
-                <h3>Meeting Info</h3>
-                {/* Add your meeting info here */}
+              <div className="meeting-info-container">
+              <h2 className="meeting-info-title">Join the Board</h2>
+              <div className="meeting-link-container">
+                <p className="meeting-link">{meetingLink}</p>
+                <button className="copy-button" onClick={copyToClipboard}>
+                  <FiCopy className="copy-icon"  style={{fontSize: '0.6cm'}}/> Copy info
+                </button>
               </div>
+            </div>
             )}
             {activeSection === 'participants' && (
               // Content for Participants section
               <div className="flex flex-col items-start ">
              <h2 className="text-[28px] mb-6  ">Participants</h2>
-             <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 hover:shadow-lg transition duration-300">
+             <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 hover:shadow-lg transition duration-300" onClick={handleAddPeopleClick}>
   <span className='flex flex-row items-center'>
     <FaUserPlus style={{ fontSize: '0.6cm' }} />
     <span className='ml-2 '>Add People</span>
   </span>
 </button>
+{isPopupOpen && <Popup onClose={handleClosePopup} user={user}/>}
 
      
 <input

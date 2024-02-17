@@ -22,9 +22,10 @@ body {
   padding: 20px;
   gap: 15px;
   position: fixed;
-  top: 0;
-  right: 0;
-  height: 100%;
+  top:64px;
+  left: 1044px;
+  
+  height: 91.8%;
   background-color: #1a1a1a;
   color: #f6f3f3;
   width: 380px; /* Adjust the width as needed */
@@ -204,5 +205,43 @@ body {
 .leave-room-button:active {
   transform: translateY(0);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.meeting-info-title {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.meeting-link {
+  display: block;
+  color: #ddd9d9;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+/* CSS */
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  background-color: rgba(72, 191, 255, 0.665); /* Glass background color */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+.copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.5); /* Lighter background color on hover */
+}
+
+.copy-icon {
+  margin-right: 8px; /* Space between icon and text */
 }
 

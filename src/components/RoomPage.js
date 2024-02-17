@@ -27,7 +27,8 @@ function RoomPage({ user }) {
         });
       } else {
         const newRoomName = Math.random().toString(36).substr(2, 9);
-         await api.post('/api/users/rooms', { roomId: newRoomName });
+        console.log(newRoomName);
+         await api.post('/api/users/rooms', {  roomId: newRoomName, userEmail: user.email });
        
         // Clear input field after successful room creation
         setNewRoomName('');
