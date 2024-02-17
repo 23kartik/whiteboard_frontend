@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../service/api'; // Import the axios instance configured with your backend URL
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './RoomPage.css'; // Import updated CSS file for styling
 
 function RoomPage({ user }) {
@@ -12,29 +15,49 @@ function RoomPage({ user }) {
       navigate('/');
     }
   }, [user, navigate]);
-
-  const createRoom = () => {
+  const createRoom = async () => {
     try {
       if (newRoomName.trim() !== '') {
-        navigate(`/drawing/${newRoomName}`);
+         await api.post('/api/users/rooms', { roomId: newRoomName, userEmail: user.email });
+
+        setNewRoomName('');
+    
+        toast.success('Room created successfully!', {
+          onClose: () =>navigate(`/drawing/${newRoomName}`), // Redirect to the room page after successful login
+        });
       } else {
         const newRoomName = Math.random().toString(36).substr(2, 9);
-        navigate(`/drawing/${newRoomName}`);
+         await api.post('/api/users/rooms', { roomId: newRoomName });
+       
+        // Clear input field after successful room creation
+        setNewRoomName('');
+        toast.success('Room created successfully!', {
+          onClose: () =>navigate(`/drawing/${newRoomName}`), // Redirect to the room page after successful login
+        });
       }
     } catch (error) {
       console.error('Error creating room:', error);
+      toast.error('Failed to create room. Please try again.');
     }
   };
 
-  const joinRoom = () => {
+  const joinRoom = async () => {
     try {
       if (roomId.trim() !== '') {
-        navigate(`/drawing/${roomId}`);
+         await api.post('/api/users/rooms/join', { roomId, userEmail: user.email });
+       
+        // Clear input field after successful room joining
+        setRoomId('');
+        toast.success('Room joined successfully!', {
+          onClose: () =>navigate(`/drawing/${roomId}`), // Redirect to the room page after successful login
+        });
       } else {
         console.error('Room ID cannot be empty');
+        toast.error('Room ID cannot be empty');
       }
     } catch (error) {
       console.error('Error joining room:', error);
+      toast.error('Failed to join room. Please try again.');
     }
   };
 
@@ -42,10 +65,9 @@ function RoomPage({ user }) {
     <div className="grid grid-cols-2 gap-[342px]">
       {/* Left section */}
       <div className="p-8">
-        <h1 className="text-2xl font-bold">hellcwecocweonvovnern3ign3rnveribv rbverbvoerverovberoverivnerovnerovo</h1>
+        <h1 className="text-2xl font-bold">Welcome to Our Drawing Room</h1>
         <div>
-          <h1 className="text-2xl font-bold">hello</h1> 
-          <h1 className="text-2xl font-bold">hello</h1>
+          <h1 className="text-2xl font-bold">Explore and Create!</h1>
         </div>
       </div>
   
@@ -77,12 +99,10 @@ function RoomPage({ user }) {
           </div>
         </div>
       </div>
+      <ToastContainer
+       />
     </div>
   );
-  
-  
-  
-  
 }
 
 export default RoomPage;

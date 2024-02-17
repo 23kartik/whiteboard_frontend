@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -17,7 +16,7 @@ const transparentButtonStyle = {
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
 };
 
-const Navbar = ({ user, setUser, onLogout,setTabValue }) => {
+const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [initialized, setInitialized] = useState(false);
 
@@ -41,13 +40,15 @@ const Navbar = ({ user, setUser, onLogout,setTabValue }) => {
     onLogout();
     handleMenuClose();
   };
-  const handleSignupClick=()=>{
-   setTabValue(1);
+
+  const handleSignupClick = () => {
+    setTabValue(1);
   };
 
-  const handleLoginClick=()=>{
-    setTabValue(0)
+  const handleLoginClick = () => {
+    setTabValue(0);
   };
+
   return (
     <AppBar style={{ backgroundColor: '#164863', zIndex: 1000 }}>
       <Toolbar>
@@ -72,6 +73,7 @@ const Navbar = ({ user, setUser, onLogout,setTabValue }) => {
               }}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
+              MenuProps={{ PaperProps: { style: { backgroundColor: '#2a3f4d', color: 'white' } } }}
             >
               <div className="p-4">
                 <div className="flex items-center mb-4">

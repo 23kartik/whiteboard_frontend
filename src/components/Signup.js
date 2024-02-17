@@ -25,14 +25,13 @@ const Signup = ({ setTabValue }) => {
       // Show success toast
       toast.success('Signed up successfully!', {
         onClose: () => {
-          setTimeout(() => {
-            setTabValue(0);
-          }, 1000);
+          setTabValue(0);
         }
       });
     } catch (error) {
       console.error('Error during signup:', error);
-      // Handle signup error, e.g., display an error message to the user
+      // Show error toast
+      toast.error('Signup failed. Please try again.');
     }
   };
 

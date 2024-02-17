@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast messages
 
 import api from '../service/api'; // Import the API service
 import './Login.css'; // Import the custom CSS file
@@ -31,16 +33,21 @@ const Login = ({ user, setUser, setTabValue }) => {
       });
       
       const { accessToken } = response.data;
-  
+      toast.success('Signed up successfully!', {
+        onClose: () => navigate('/room'), // Redirect to the room page after successful login
+      });
       localStorage.setItem('jwtToken', accessToken);
       localStorage.setItem('userEmail', email);
   
       setUser({ email });
   
       console.log('Login successful');
-      navigate('/room');
+      
+    
+     
     } catch (error) {
       console.error('Error during login:', error);
+      toast.error('Login failed. Please check your credentials.'); // Display error message in toast
     }
   };
 
@@ -68,7 +75,6 @@ const Login = ({ user, setUser, setTabValue }) => {
             className="login-input"
             required // This attribute makes the input field required
             autoFocus 
-            
           />
           <input
             label="Password"
@@ -81,7 +87,6 @@ const Login = ({ user, setUser, setTabValue }) => {
             placeholder="Password"
             className="login-input"
             required // This attribute makes the input field required
-            
           />
          <p className="login-text ml-4 mb-2">Not Signed Up? <button onClick={toSignUp}><strong className='text-rose-300'>SignUp</strong></button></p>
 
@@ -96,6 +101,8 @@ const Login = ({ user, setUser, setTabValue }) => {
         <h1 className="welcome-heading">Welcome Back!</h1>
         <p className="welcome-text">Please login to continue.</p>
       </div>
+
+      <ToastContainer /> {/* Toast container for displaying messages */}
     </div>
   );
 };

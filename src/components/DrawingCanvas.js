@@ -17,6 +17,8 @@ import {
   FaUsers,
   FaUserPlus,
   FaPaperPlane,
+
+  FaDoorOpen,
 } from 'react-icons/fa';
 
 
@@ -55,11 +57,13 @@ const DrawingCanvas = ({ user }) => {
 
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [storedEmail, setStoredEmail]=useState("");
+  const [roomData, setRoomData]=useState("");
   const roomId = useParams().roomID;
   const history = useNavigate();
  
   
-  useEffect(() => {
+useEffect(() => {
 
 if(!user) {
   history('/room');
@@ -114,24 +118,36 @@ else{
       setMessage('');
     }
   };
-  
+
   // Update the useEffect to handle messages with roles and timestamp
   useEffect(() => {
     if(!user) {
       history('/room');
     }  
 else{
+  setStoredEmail(localStorage.getItem('userEmail')) 
+  
+  const fetchRoomData = async () => {
+    
+    const response = await api.get(`/api/users/rooms/${roomId}`);
+        
+    // If room data is successfully fetched, you can handle it here
+    setRoomData(response.data.adminEmail);
+    
+  };
   socket.on('receive-message', ({ user, message, role, timestamp }) => {
     setChatMessages((prevMessages) => [...prevMessages, { user, message, role, timestamp }]);
   });
-
+  fetchRoomData();
   return () => {
     socket.off('receive-message');
   };
+
 }
- 
+
   }, []);
-  
+ 
+
 
 
   const exportDrawing = () => {
@@ -260,6 +276,37 @@ else{
       console.error('Error loading drawing:', error);
     }
   };
+
+const handleCloseRoom= async()=>{
+try {
+
+api.delete(`/api/users/rooms/${roomId}?userEmail=${user.email}`);
+socket.emit('deleteRoom');
+
+} catch (error) {
+  console.log("Error Closing Room")
+}
+};
+const handleLeaveRoom=()=>{
+try {
+  history('/room');
+} catch (error) {
+  console.log("Error Leaving Room")
+
+}
+};
+useEffect(() => {
+  // Listen for the deletion event
+  socket.on('roomDeleted', () => {
+      // Redirect to home page
+      history('/room');
+  });
+
+  return () => {
+      // Clean up event listener
+      socket.off('roomDeleted');
+  };
+}, [history]);
 
   return (
      <div className='max-h-screen flex items-center justify-center relative'>
@@ -453,10 +500,21 @@ else{
             
             )}
           </div>
-          <div className="flex flex-row mt-4 space-x-28 mx-auto">
+          <div className="flex flex-row  space-x-16 mx-auto">
     <button onClick={() => handleSectionChange('info')}><FaInfoCircle style={{ fontSize: '.8cm' }}/></button>
     <button onClick={() => handleSectionChange('participants')}><FaUsers style={{ fontSize: '.8cm' }}/></button>
     <button onClick={() => handleSectionChange('chat')}><IoMdChatbubbles style={{ fontSize: '.8cm' }}/></button>
+    {storedEmail === roomData ? (
+    // If storedEmail and roomData are equal, render the "Close Room" button
+<button onClick={handleCloseRoom} className="leave-room-button">
+  <FaDoorOpen style={{ fontSize: '1.2cm',padding:'4px' }}/>
+  
+</button>  ) : (
+    // If storedEmail and roomData are not equal, render the "Leave Room" button
+    <button onClick={handleLeaveRoom} className="leave-room-button">
+    <FaDoorOpen style={{ fontSize: '1.2cm' }}/>
+  </button>
+  )}
   </div>
         </div>
 
