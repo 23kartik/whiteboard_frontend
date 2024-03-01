@@ -53,7 +53,7 @@ const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
     <AppBar style={{ backgroundColor: '#164863', zIndex: 1000 }}>
       <Toolbar>
         <Typography variant="h6" style={{ flex: 1 }}>
-          Whiteboard
+          SyncSketch
         </Typography>
         {user ? (
           <>
