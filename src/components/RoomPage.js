@@ -4,6 +4,7 @@ import api from '../service/api'; // Import the axios instance configured with y
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './RoomPage.css'; // Import updated CSS file for styling
+import { CardStackDemo } from './CardStackDemo';
 
 function RoomPage({ user }) {
   const [newRoomName, setNewRoomName] = useState('');
@@ -66,10 +67,7 @@ function RoomPage({ user }) {
     <div className="grid grid-cols-2 gap-[342px]">
       {/* Left section */}
       <div className="p-8">
-        <h1 className=" heading text-2xl font-bold">Welcome to Our Drawing Room</h1>
-        <div>
-          <h1 className="heading text-2xl font-bold">Explore and Create!</h1>
-        </div>
+       <CardStackDemo />
       </div>
   
       {/* Right section */}
