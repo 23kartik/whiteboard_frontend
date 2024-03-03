@@ -10,7 +10,7 @@ const Popup = ({ onClose,user }) => {
     const navigate = useNavigate();
     useEffect(() => {
         if (!user) {
-          navigate('/');
+          navigate('/auth');
         }
       }, [user, navigate]);
   const [emailInput, setEmailInput] = useState('');
@@ -52,8 +52,8 @@ const Popup = ({ onClose,user }) => {
             to: selectedEmails,
             subject: `Hurray, ${user.email} invited you to the whiteboard!`,
             meetingLink: window.location.href,
-            senderEmail: 'kartik2350@gmail.com', // Check this line
-            senderPassword: 'xvtfyfukviugovgp'
+            senderEmail: 'drawsync.invite@gmail.com', // Check this line
+            senderPassword: 'qadqulxyhbiafzhj'
         };
           console.log(emailData.senderEmail)
           

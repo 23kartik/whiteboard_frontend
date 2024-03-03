@@ -12,7 +12,7 @@ function RoomPage({ user }) {
 
   useEffect(() => {
     if (!user) {
-      navigate('/');
+      navigate('/auth');
     }
   }, [user, navigate]);
   const createRoom = async () => {
@@ -66,15 +66,15 @@ function RoomPage({ user }) {
     <div className="grid grid-cols-2 gap-[342px]">
       {/* Left section */}
       <div className="p-8">
-        <h1 className="text-2xl font-bold">Welcome to Our Drawing Room</h1>
+        <h1 className=" heading text-2xl font-bold">Welcome to Our Drawing Room</h1>
         <div>
-          <h1 className="text-2xl font-bold">Explore and Create!</h1>
+          <h1 className="heading text-2xl font-bold">Explore and Create!</h1>
         </div>
       </div>
   
       {/* Right section */}
       <div className="room-container p-4">
-        <h1>Let's Draw Together!</h1>
+        <h1 className='heading'>Let's Draw Together!</h1>
         <div className="create-room-section">
           <h2>Create New Room</h2>
           <input

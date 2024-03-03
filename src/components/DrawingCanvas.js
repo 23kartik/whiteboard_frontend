@@ -37,7 +37,7 @@ import { io } from 'socket.io-client';
 
 
 
-const socket = io('http://localhost:5001');
+const socket = io('https://whiteboard-backend-m760.onrender.com');
 
 const DrawingCanvas = ({ user }) => {
 
@@ -64,7 +64,7 @@ const DrawingCanvas = ({ user }) => {
   const [roomData, setRoomData]=useState("");
   const roomId = useParams().roomID;
   const history = useNavigate();
-  const meetingLink = `http://localhost:3000/drawing/${roomId}`;
+  const meetingLink =window.location.href;
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleAddPeopleClick = () => {
@@ -413,10 +413,10 @@ const copyToClipboard = async () => {
           </button>
         </div>
 
-        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[955px] h-[695px] left-16 fixed ' style={{ background: canvasBackground }}>
+        <div className='border rounded-[2rem] shadow-xl -mt-5 w-[955px] h-[710px] left-16 fixed ' style={{ background: canvasBackground }}>
 
 
-          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={955} height={695} />
+          <canvas className={`${eraserMode ? 'eraser-cursor' : 'pencil-canvas'}` } ref={canvasRef} onMouseDown={onMouseDown} width={955} height={710} />
         </div>    
         <div className="connected-users  bg-gradient-to-t from-#FF5733 to-#33FF57 p-4 overflow-hidden">
           <div className="grid grid-cols-2 h-full overflow-y-auto">

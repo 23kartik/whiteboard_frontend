@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5001'; // Replace with your actual backend URL
+const API_BASE_URL = 'https://whiteboard-backend-m760.onrender.com/'; // Replace with your actual backend URL
 
 const api = axios.create({
   baseURL: API_BASE_URL,

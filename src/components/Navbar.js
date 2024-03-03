@@ -6,6 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
+import logo from "../assets/logo.png"
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useHistory and useLocation from React Router
 
 const transparentButtonStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -19,6 +21,8 @@ const transparentButtonStyle = {
 const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('userEmail');
@@ -49,12 +53,22 @@ const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
     setTabValue(0);
   };
 
+  const handleGetStartedClick = () => {
+    // Handle the "Get Started" button click
+    // For example, redirect the user to a specific route
+    navigate('/auth');
+  };
+
+  // Check if the user is on the homepage
+  const isHomePage = location.pathname === '/';
+
   return (
     <AppBar style={{ backgroundColor: '#164863', zIndex: 1000 }}>
       <Toolbar>
-        <Typography variant="h6" style={{ flex: 1 }}>
-          SyncSketch
-        </Typography>
+        <div variant="h6" style={{ flex: 1}}>
+        <img src={logo} alt="DrawSync Logo" style={{ flex: 1, height: '71px',width:'150px' }} />
+        </div>
+
         {user ? (
           <>
             <IconButton edge="end" color="inherit" onClick={handleMenuOpen}>
@@ -93,14 +107,21 @@ const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
             </Menu>
           </>
         ) : (
-          <div className="flex space-x-2">
-            <Button variant="outlined" style={transparentButtonStyle} onClick={handleSignupClick}>
-              Signup
+          // Conditionally render the buttons based on the route
+          isHomePage ? (
+            <Button variant="outlined" style={transparentButtonStyle} onClick={handleGetStartedClick}>
+              Get Started
             </Button>
-            <Button variant="outlined" style={transparentButtonStyle} onClick={handleLoginClick}>
-              Login
-            </Button>
-          </div>
+          ) : (
+            <div className="flex space-x-2">
+              <Button variant="outlined" style={transparentButtonStyle} onClick={handleSignupClick}>
+                Signup
+              </Button>
+              <Button variant="outlined" style={transparentButtonStyle} onClick={handleLoginClick}>
+                Login
+              </Button>
+            </div>
+          )
         )}
       </Toolbar>
     </AppBar>
