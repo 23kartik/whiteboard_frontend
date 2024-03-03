@@ -64,7 +64,7 @@ function RoomPage({ user }) {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-[342px]">
+    <div className="grid grid-cols-2 gap-[342px] " >
       {/* Left section */}
       <div className="p-8">
        <CardStackDemo />

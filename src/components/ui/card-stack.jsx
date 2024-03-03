@@ -27,13 +27,15 @@ export const CardStack = ({
   };
 
   return (
-    <div className="relative  h-[320px] w-[540px] ml-20 mt-16">
+    <div className="relative  h-[320px] w-[540px] ml-20 mt-16" >
       {cards.map((card, index) => (
         <motion.div
           key={card.id}
-          className="absolute dark:bg-black bg-white h-[320px] w-[540px] rounded-3xl p-4 shadow-xl border border-neutral-200 dark:border-white/[0.1]  shadow-black/[0.1] dark:shadow-white/[0.05] flex flex-col justify-between"
+          className="absolute bg-opacity-50 dark:bg-black dark:bg-opacity-50 h-[320px] w-[540px] rounded-3xl p-4 shadow-xl border border-neutral-200 dark:border-white/[0.1] shadow-black/[0.1] dark:shadow-white/[0.05] flex flex-col justify-between"
           style={{
             transformOrigin: "top center",
+           
+            backgroundColor:'white'
           }}
           animate={{
             top: index * -CARD_OFFSET,

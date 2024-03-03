@@ -56,11 +56,11 @@ const Login = ({ user, setUser, setTabValue }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-[348px] ">
+    <div className="flex ">
       {/* Left section */}
       <div className="p-8 login-container">
         <div className="p-6 login-form">
-          <Typography variant="h6" className="mb-4 login-heading">
+          <Typography variant="h6" className=" login-heading">
             Login
           </Typography>
           <input
@@ -72,7 +72,7 @@ const Login = ({ user, setUser, setTabValue }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="login-input"
+            className="login-input mt-8"
             required // This attribute makes the input field required
             autoFocus 
           />
@@ -88,19 +88,17 @@ const Login = ({ user, setUser, setTabValue }) => {
             className="login-input"
             required // This attribute makes the input field required
           />
-         <p className="login-text ml-4 mb-2">Not Signed Up? <button onClick={toSignUp}><strong className='text-rose-300'>SignUp</strong></button></p>
 
-          <button variant="contained" color="primary" fullWidth onClick={handleLogin} className="login-button">
+          <button variant="contained" color="primary" fullWidth onClick={handleLogin} className="login-button mt-4">
             Login
           </button>
+          <p className="login-text ml-4 mb-2 pt-6 text-center">Not Signed Up? <button onClick={toSignUp}><strong className='text-rose-300'>SignUp</strong></button></p>
+
         </div>
       </div>
       
-      {/* Right section */}
-      <div className="p-8 welcome-section">
-        <h1 className="welcome-heading">Welcome Back!</h1>
-        <p className="welcome-text">Please login to continue.</p>
-      </div>
+
+
 
       <ToastContainer /> {/* Toast container for displaying messages */}
     </div>

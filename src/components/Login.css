@@ -5,6 +5,7 @@
   
   .login-form {
     padding: 40px;
+    height: 400px;
     background: linear-gradient(to right, #120d0e, #1c6291);
     border-radius: 20px;
     color: #fff;
@@ -43,7 +44,8 @@
   }
   
   .login-button {
-    width: 100%;
+    width: 52%;
+   margin-left: 25%;
     padding: 15px;
     background-color: #ff4e50;
     color: #fff;

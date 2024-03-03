@@ -1,5 +1,10 @@
 import { CardStack } from "./ui/card-stack";
 import  cn  from "../utils/cn";
+import logo1 from '../assets/logo1.png';
+import logo2 from '../assets/logo2.png';
+import logo3 from '../assets/logo3.png';
+import logo4 from '../assets/logo4.png';
+import logo5 from '../assets/logo5.png';
 
 export function CardStackDemo() {
   return (
@@ -31,9 +36,9 @@ const CARDS = [
     name: "Kartike Tiwari",
     designation: "Software Engineer",
     content: (
-      <p>
-  Our whiteboard provides users with a rich array of drawing tools, empowering them to express their creativity freely. From pens to pencils, markers to highlighters, users can select from a diverse palette of options to bring their ideas to life on the digital canvas.
-      </p>
+<img src={logo1} alt="lol" style={{ height: '300px', width: '500px' }} />
+
+
     ),
   },
   {
@@ -41,9 +46,8 @@ const CARDS = [
     name: "Kartike Tiwari",
     designation: "Software Engineer",
     content: (
-      <p>
- Tailoring the brush size and color is key to realizing your artistic vision. Our platform offers extensive brush customization options, allowing users to adjust parameters to perfectly match their preferences and artistic style.
-      </p>
+      <img src={logo2} alt="lol" style={{ height: '300px', width: '500px' }} />
+
     ),
   },
   {
@@ -51,9 +55,9 @@ const CARDS = [
     name: "Kartike Tiwari",
     designation: "Software Engineer",
     content: (
-      <p>
-   Mistakes happen, but with our intuitive eraser tool, users can effortlessly correct errors or remove unwanted elements from their drawings. The erasing functionality ensures a seamless and frustration-free drawing experience.
-      </p>
+<img src={logo3} alt="lol" style={{ height: '300px', width: '500px' }} />
+
+
     ),
   },
   {
@@ -61,9 +65,8 @@ const CARDS = [
     name: "Kartike Tiwari",
     designation: "Software Engineer",
     content: (
-      <p>
-  Capture your creative moments and preserve them for posterity with our save and retrieve feature. Whether it's for future reference, collaboration, or simply to admire your work later, our platform makes it easy to store and access your drawings at any time.
-      </p>
+      <img src={logo4} alt="lol" style={{ height: '300px', width: '500px' }} />
+
     ),
   },
   {
@@ -71,37 +74,9 @@ const CARDS = [
     name: "Kartike Tiwari",
     designation: "Software Engineer",
     content: (
-      <p>
-  Take your creations beyond the digital realm by downloading them locally. Our download option enables users to save their drawings to their devices, facilitating easy sharing, printing, or archiving of their artistic endeavors.
-      </p>
+      <img src={logo5} alt="lol" style={{ height: '300px', width: '500px' }} />
+
     ),
   },
-  {
-    id: 5,
-    name: "Kartike Tiwari",
-    designation: "Software Engineer",
-    content: (
-      <p>
- Collaboration thrives on communication, which is why our platform features a real-time chat function. Engage in lively discussions, share ideas, and brainstorm with other users, all within the same digital workspace.
-      </p>
-    ),
-  },
-  {
-    id: 6,
-    name: "Kartike Tiwari",
-    designation: "Software Engineer",
-    content: (
-      <p>
-Extend your collaborative network effortlessly by sending email invitations to others to join your whiteboard sessions. Seamlessly integrate colleagues, friends, or collaborators into your creative process with just a few clicks.      </p>
-    ),
-  },
-  {
-    id: 5,
-    name: "Kartike Tiwari",
-    designation: "Software Engineer",
-    content: (
-      <p>
-Tailor your collaborative experience to your preferences by creating personalized rooms. Whether you opt for a named room for recurring meetings or a random room for spontaneous brainstorming sessions, our customizable room creation feature ensures flexibility and adaptability to your collaboration needs.      </p>
-    ),
-  },
+  
 ];

@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import logo from "../assets/logo.png"
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useHistory and useLocation from React Router
+import { useNavigate, useLocation, Link } from 'react-router-dom'; // Import useHistory and useLocation from React Router
 
 const transparentButtonStyle = {
   backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -66,7 +66,9 @@ const Navbar = ({ user, setUser, onLogout, setTabValue }) => {
     <AppBar style={{ backgroundColor: '#164863', zIndex: 1000 }}>
       <Toolbar>
         <div variant="h6" style={{ flex: 1}}>
+          <Link to="/">
         <img src={logo} alt="DrawSync Logo" style={{ flex: 1, height: '71px',width:'150px' }} />
+        </Link>
         </div>
 
         {user ? (

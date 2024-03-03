@@ -40,7 +40,7 @@ const Signup = ({ setTabValue }) => {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-[348px] ">
+    <div className="flex ">
       {/* Left section */}
       <div className="p-8 signup-container">
         <div  className="p-6 signup-form">
@@ -55,7 +55,7 @@ const Signup = ({ setTabValue }) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Username"
-            className="signup-input"
+            className="signup-input mt-8"
             required // This attribute makes the input field required
           />
           <input
@@ -82,20 +82,17 @@ const Signup = ({ setTabValue }) => {
             className="signup-input"
             required // This attribute makes the input field required
           />
-          <p className="login-text ml-4 mb-2">Already Signed Up? <button onClick={toLogin}><strong className='text-rose-300'>Login</strong></button></p>
-          <button variant="contained"  fullWidth onClick={handleSignup} className="signup-button">
+          <button variant="contained"  fullWidth onClick={handleSignup} className="signup-button mt-4">
             Sign Up
           </button>
+          <p className="login-text ml-4 mb-2 pt-6 text-center ">Already Signed Up? <button onClick={toLogin}><strong className='text-rose-300'>Login</strong></button></p>
+
           
           <ToastContainer />
         </div>
       </div>
 
-      {/* Right section */}
-      <div className="p-8 welcome-section">
-        <h1 className="welcome-heading">Welcome to our platform!</h1>
-        <p className="welcome-text">Sign up to get started.</p>
-      </div>
+
     </div>
   );
 };

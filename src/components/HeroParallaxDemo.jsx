@@ -1,97 +1,112 @@
 import React from "react";
 import { HeroParallax } from "./ui/hero-parallax";
+import ss1 from '../assets/ss1.png';
+import ss2 from '../assets/ss2.png';
+import ss3 from '../assets/ss3.png';
+import ss4 from '../assets/ss4.png';
+import ss5 from '../assets/ss5.jpeg';
+import ss6 from '../assets/ss6.webp';
+import ss7 from '../assets/ss7.png';
+import ss8 from '../assets/ss8.png';
+import ss9 from '../assets/ss9.jpg';
+import ss10 from '../assets/ss10.jpeg';
+
+import s11 from '../assets/s11.avif';
+import ss12 from '../assets/ss12.jpeg';
+import ss13 from '../assets/ss13.webp';
+import ss14 from '../assets/ss14.png';
+import ss15 from '../assets/ss15.webp';
+import ss16 from '../assets/ss16.png';
+import ss17 from '../assets/ss17.jpeg';
 
 export function HeroParallaxDemo() {
   const products = [
     {
-      title: "Moonbeam",
-      link: "https://gomoonbeam.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
+      
+     
+      thumbnail:ss9,
     },
     {
-      title: "Cursor",
-      link: "https://cursor.so",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/cursor.png",
+
+      
+      thumbnail:ss2,
+
     },
     {
-      title: "Rogue",
-      link: "https://userogue.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/rogue.png",
+
+     
+      thumbnail:ss3,
+
     },
     {
-      title: "Editorially",
-      link: "https://editorially.org",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/editorially.png",
+    
+     
+      thumbnail:ss4,
+
     },
     {
-      title: "Editrix AI",
-      link: "https://editrix.ai",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/editrix.png",
+
+     
+      thumbnail:ss5,
+
     },
     {
-      title: "Pixel Perfect",
-      link: "https://app.pixelperfect.quest",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
+ 
+     
+      thumbnail:ss6,
+
     },
     {
-      title: "Algochurn",
-      link: "https://algochurn.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
+   
+      
+      thumbnail:ss7,
+
     },
     {
-      title: "Aceternity UI",
-      link: "https://ui.aceternity.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
+  
+ 
+      thumbnail:ss8,
+
     },
     {
-      title: "Tailwind Master Kit",
-      link: "https://tailwindmasterkit.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
+    
+ 
+      thumbnail:s11,
+
     },
     {
-      title: "SmartBridge",
-      link: "https://smartbridgetech.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
+
+      thumbnail:ss12,
+
     },
     {
-      title: "Renderwork Studio",
-      link: "https://renderwork.studio",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
+     
+      thumbnail:ss13,
+
     },
     {
-      title: "Creme Digital",
-      link: "https://cremedigital.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
+    
+     
+      thumbnail:ss14,
+
     },
     {
-      title: "Golden Bells Academy",
-      link: "https://goldenbellsacademy.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
+     
+     
+      thumbnail:ss15,
+
     },
     {
-      title: "Invoker Labs",
-      link: "https://invoker.lol",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/invoker.png",
+    
+     
+      thumbnail:ss16,
+
     },
     {
-      title: "E Free Invoice",
-      link: "https://efreeinvoice.com",
-      thumbnail:
-        "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
+      
+    
+      thumbnail:ss17,
+
     },
   ];
 
