@@ -35,7 +35,7 @@ export const CardStack = ({
           style={{
             transformOrigin: "top center",
            
-            backgroundColor:'white'
+            backgroundColor:'#F8F2ED'
           }}
           animate={{
             top: index * -CARD_OFFSET,
