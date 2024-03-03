@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import CloseIcon from '@mui/icons-material/Close';
 import EmailIcon from '@mui/icons-material/Email'; // Import the Email icon from your icon library
@@ -15,7 +15,7 @@ const Popup = ({ onClose,user }) => {
       }, [user, navigate]);
   const [emailInput, setEmailInput] = useState('');
   const [selectedEmails, setSelectedEmails] = useState([]);
-
+    const roomId = useParams().roomID;
   const handleEmailInputChange = (event) => {
     setEmailInput(event.target.value);
   };
@@ -52,6 +52,7 @@ const Popup = ({ onClose,user }) => {
             to: selectedEmails,
             subject: `Hurray, ${user.email} invited you to the whiteboard!`,
             meetingLink: window.location.href,
+            roomId,
             senderEmail: 'drawsync.invite@gmail.com', // Check this line
             senderPassword: 'qadqulxyhbiafzhj'
         };

@@ -326,6 +326,7 @@ useEffect(() => {
 const copyToClipboard = async () => {
   try {
     await navigator.clipboard.writeText(meetingLink);
+    console.log(meetingLink);
     alert('Meeting link copied to clipboard!');
   } catch (error) {
     console.error('Failed to copy meeting link:', error);
