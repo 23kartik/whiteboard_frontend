@@ -93,13 +93,11 @@ export const HeroParallax = ({ products }) => {
 export const Header = () => {
   return (
 <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0 text-left">
-  <h1 className="text-4xl md:text-7xl font-bold dark:text-white mb-4 left-inclined" style={{ fontFamily: 'Your_Custom_Font', fontStyle: 'italic' }}>
-    The Ultimate <br /> development studio
-  </h1>
-  <p className="max-w-2xl text-base md:text-xl mt-4 dark:text-neutral-200" style={{ fontFamily: 'Your_Custom_Font' }}>
-    We build beautiful products with the latest technologies and frameworks.
-    We are a team of passionate developers and designers that love to build
-    amazing products.
+  <h1 className="text-4xl md:text-7xl font-weight:900 dark:text-white mb-4 left-inclined" style={{ fontFamily: 'Your_Custom_Font', fontStyle: 'italic' ,fontWeight:"900", fontSize:"74px",color:'whitesmoke'}}>
+   DrawSketch <br /><br /> Sketch, Share, Succeed !
+  </h1><br/>
+  <p className="max-w-2xl text-base md:text-xl mt-4 dark:text-neutral-200" style={{ fontFamily: 'Your_Custom_Font',fontSize:"24px" }}>
+  DrawSketch (real-time collaborative whiteboard) project offers a dynamic platform for seamless teamwork and creative expression. Users can engage in live drawing sessions, communicate effortlessly, and share ideas in real-time.
   </p>
 </div>
 
