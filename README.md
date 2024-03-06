@@ -32,9 +32,9 @@ Welcome to the Realtime Collaborative Whiteboard project! This application facil
 To deploy the Realtime Collaborative Whiteboard locally, adhere to the following setup instructions:
 
 1. Clone the repository to your local machine (both frontend and backend).
-2. npm install to insall all the dependencies for both client and server.
+2. npm install to install all the dependencies for both client and server.
 3. Replace the database url with your databse url.
-4. npm start
+4. npm start to run thr app.
 
 ## Screenshots
 <img width="1432" alt="Screenshot 2024-03-06 at 1 37 54 PM" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/f65e2e04-7b9c-49c9-a164-17d59237f903">
