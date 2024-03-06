@@ -41,8 +41,7 @@ To deploy the Realtime Collaborative Whiteboard locally, adhere to the following
 
 <img width="1438" alt="ss1" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/c31b317f-77b3-4cf2-99db-52c2f50ebc20">
 <img width="1438" alt="ss2" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/8bec08d4-813e-4581-a880-39ec4e480850">
-<img width="1433" alt="ss3" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/37da5eee-5d8d-465a-9f40-93dcb7088ea6">
-<img width="1433" alt="ss3" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/301ed574-a596-420a-99a2-c842ecbbdada">
+
 <img width="1435" alt="ss4" src="https://github.com/23kartik/whiteboard_frontend/assets/84660976/a1b22182-cfb8-4347-a803-a3fe555fa852">
 
 
